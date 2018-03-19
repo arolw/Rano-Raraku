@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+
+ <!-- @since 02.11.2017 -->
+
+<html lang="en">
+	<head>
+		<title>Visualisierung Rano Raraku</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		<!--Bootstrap, jQuery-->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+		
+		<!--Leaflet-->
+		<link rel="stylesheet" href="css/leaflet.css">
+		<script type='text/javascript' src='js/leaflet.js'></script>
+	
+		<!--Own Stylesheet-->
+		<link rel="stylesheet" href="css/mainStyle.css">
+		<script src="main.js"></script>
+		<script src="data/volcanoArray.js"></script>
+		
+		<!--Switch Stylesheet-->
+		<link rel="stylesheet" href="css/switch.css">
+	
+		<!--Highcharts-->
+		<script src="https://code.highcharts.com/highcharts.js"></script>
+		<script src="https://code.highcharts.com/modules/exporting.js"></script>
+		
+		<!--MarkerCluster-->
+		<link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/0.4.0/MarkerCluster.css" />
+		<link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/0.4.0/MarkerCluster.Default.css" />
+		<script type='text/javascript' src='http://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/0.4.0/leaflet.markercluster.js'></script>
+
+		<!--Favicon Website-->
+		<link rel="icon" type="image/png" href="marker/moai.png"/>	
+	</head>
+	
+	<body>
+		<!--Modal-Popup zur Anzeige von Fehlermeldungen-->
+		<div class="modal fade" id="modalAlert" role="dialog">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header" >
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="false">&times;</button>
+						<h4 class="modal-title alert-header" id="modalHeaderAlert">Info</h4>
+					</div>
+					<div class="modal-body alert-body" id="modalBodyAlert"></div>
+				</div>
+			</div>
+		</div>	
+		<!--Modal-Popup zur Anzeige des Ladebalkens während SPARQL-Anfragen-->
+		<div class="modal fade" id="modalProgressBar" role="dialog">
+			<div class="modal-dialog modal-sm">
+				<div class="modal-content">
+					<div class="modal-body progress-body" id="modalBodyProgress"></div>
+				</div>
+			</div>
+		</div>	
+		<!--Gesamte Page-->
+		<div class="container-fluid">
+			<!--Header Bereich definieren-->
+			<div class="row row-header">
+				<div class="col-sm-10 col-header">
+					<label class="btn-at-header" style="font-size: 12pt"><span class="fa fa-filter" ></span> Visualisierung von archälogischen Daten am Vulkan "Rano Raraku" auf der Osterinsel</label>
+				</div>
+				<!--Impressum-Button erzeugen und Anzeigebereich im Header definieren-->
+				<div class="col-sm-2 col-information">
+					<button type="button" class="btn btn-default btnInformation btn-at-header" id="btnInformation" ><span class="fa fa-info"></span> Impressum</button>
+					<div class="modal fade" id="modalInformation" role="dialog">
+						<div class="modal-dialog modal-lg">
+							<div class="modal-content">
+								<div class="modal-header" >
+									<button type="button" class="close" data-dismiss="modal">&times;</button>
+									<h4 class="modal-title information-header" id="modalHeaderInformation">Info</h4>
+								</div>
+								<div class="modal-body information-body" id="modalBodyInformation"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--Content Bereich definieren-->
+			<div class="row row-content">
+				<!--Bereich für die Seitenleiste definieren-->
+				<div class="col-sm-2 col-sidebar">
+					<!--Parametereinstellungen im oberen Seitenleistenbereich definieren-->
+					<div class="row-selection-bar">
+						<!--Allgemeine Informationen mit einzelnen Button-->
+						<div class="form-group sidebar-bar sidebar-ul-list">
+							<ul class="list-group sidebar-ul-list">
+								<div class="panel panel-default sidebar-ul-list">
+									<div class="panel-heading sidebar-heading">Allgemeine Informationen</div>		
+									<li class="list-group-item list-group-button">
+									<!--Button Osterinsel-->
+										<button type="button" class="btn btn-default btn-search btn-at-sidebar sidebar-button" id="btnOsterinsel" ><span class="fa fa-info"></span> Osterinsel</button>
+											<div class="modal fade" id="modalOsterinsel" role="dialog">
+												<div class="modal-dialog modal-lg">
+													<div class="modal-content">
+														<div class="modal-header" >
+															<button type="button" class="close" data-dismiss="modal">&times;</button>
+															<h4 class="modal-title information-header" id="modalHeaderOsterinsel">Info</h4>
+														</div>
+														<div class="modal-body information-body" id="modalBodyOsterinsel"></div>
+													</div>
+												</div>
+											</div>
+										<!--Button Rano Raraku-->
+										<button type="button" class="btn btn-default btn-search btn-at-sidebar sidebar-button" id="btnRanoRaraku" ><span class="fa fa-info"></span> Rano Raraku</button>
+											<div class="modal fade" id="modalRanoRaraku" role="dialog">
+												<div class="modal-dialog modal-lg">
+													<div class="modal-content">
+														<div class="modal-header" >
+															<button type="button" class="close" data-dismiss="modal">&times;</button>
+															<h4 class="modal-title information-header" id="modalHeaderRanoRaraku">Info</h4>
+														</div>
+														<div class="modal-body information-body" id="modalBodyRanoRaraku"></div>
+													</div>
+												</div>
+											</div>											
+										<!--Button Moai Statuen-->
+										<button type="button" class="btn btn-default btn-search btn-at-sidebar sidebar-button" id="btnMoai" ><span class="fa fa-info"></span> Moai Statuen</button>
+										<div class="modal fade" id="modalMoai" role="dialog">
+											<div class="modal-dialog modal-lg">
+												<div class="modal-content">
+													<div class="modal-header" >
+														<button type="button" class="close" data-dismiss="modal">&times;</button>
+														<h4 class="modal-title information-header" id="modalHeaderMoai">Info</h4>
+													</div>
+													<div class="modal-body information-body" id="modalBodyMoai"></div>
+												</div>
+											</div>
+										</div>	
+									</li>
+								</div>
+							</ul>
+						</div>
+						<!--Checkboxen zur Datendarstellung auf der Karte-->
+						<div class="panel panel-default sidebar-ul-list">
+							<div class="panel-heading sidebar-heading">Daten auf Karte darstellen</div>
+							<ul class="list-group">
+								<li class="list-group-item">
+									Vulkane
+									<div class="material-switch pull-right">
+										<input id="vulcans_check" name="vulcans_check" type="checkbox"/>
+										<label for="vulcans_check" class="label-primary"></label>
+									</div>
+								</li>
+								<li class="list-group-item">
+									Rano Raraku
+									<div class="material-switch pull-right">
+										<input id="ranoRaraku_check" name="ranoRaraku_check" type="checkbox"/>
+										<label for="ranoRaraku_check" class="label-primary" ></label>
+									</div>
+								</li>
+								<li class="list-group-item">
+									Moai Statuen
+									<div class="material-switch pull-right">
+										<input id="moai_check" name="moai_check" type="checkbox"/>
+										<label for="moai_check" class="label-primary"></label>
+									</div>
+								</li>
+							</ul>
+						</div>
+						<!--Legende-->
+						<div class="panel panel-default sidebar-ul-list">
+							<div class="panel-heading sidebar-heading">Legende</div>
+							<ul class="list-group">
+								<li class="list-group-item">
+									<div class="legend_icon">
+										<img src="marker/moai.png" height="20px" width="20px" />
+									</div>
+									<div class="legend_text">Moai Statuen</div>
+								</li>
+								<li class="list-group-item">
+									<div class="legend_icon">	
+										<img src="marker/volcano.png" height="20px" width="20px" />
+									</div>
+									<div class="legend_text">Vulkane</div>
+								</li>
+								<li class="list-group-item">
+									<div class="legend_icon">
+										<img src="marker/rano_raraku.png" height="20px" width="20px" />
+									</div>
+									<div class="legend_text">Rano Raraku</div>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<!--Kartenbereich definieren-->
+				<div class="col-sm-10 col-map">
+					<div id="map"></div>
+				</div>
+			</div>
+		</div>  
+	</body>
+</html>
